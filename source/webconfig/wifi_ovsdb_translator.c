@@ -1141,6 +1141,7 @@ webconfig_error_t webconfig_ovsdb_encode(webconfig_t *config,
         wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d: OVSM encode failed\n", __func__, __LINE__);
         free_maclist_map(webconfig_ovsdb_data.u.decoded.num_radios, rdk_wifi_radio_state);
         free(rdk_wifi_radio_state);
+        webconfig_data_free(&webconfig_ovsdb_data);
         pthread_mutex_unlock(&webconfig_data_lock);
         return webconfig_error_encode;
     }
@@ -1158,6 +1159,7 @@ webconfig_error_t webconfig_ovsdb_encode(webconfig_t *config,
         *str = NULL;
         free_maclist_map(webconfig_ovsdb_data.u.decoded.num_radios, rdk_wifi_radio_state);
         free(rdk_wifi_radio_state);
+        webconfig_data_free(&webconfig_ovsdb_data);
         pthread_mutex_unlock(&webconfig_data_lock);
         return webconfig_error_translate_from_ovsdb_cfg_no_change;
     }
@@ -1166,6 +1168,7 @@ webconfig_error_t webconfig_ovsdb_encode(webconfig_t *config,
     *str = webconfig_ovsdb_raw_data_ptr;
     free_maclist_map(webconfig_ovsdb_data.u.decoded.num_radios, rdk_wifi_radio_state);
     free(rdk_wifi_radio_state);
+    webconfig_data_free(&webconfig_ovsdb_data);
 
     pthread_mutex_unlock(&webconfig_data_lock);
 
