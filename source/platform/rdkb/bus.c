@@ -1639,8 +1639,6 @@ bus_error_t bus_method_invoke(bus_handle_t *handle, void *paramName, char *event
     rbusObject_Init(&inParams, NULL);
     rbusValue_Init(&value);
 
-    wifi_util_info_print(WIFI_BUS, "%s:%d: rbus: rbus_method_invoke() is called for event:%s, paramName:%s\n",
-        __func__, __LINE__, event, (char *)paramName);
     if ((input_bus_data == BUS_METHOD_SET) || (input_bus_data == BUS_METHOD_SET_GET)) {
         if (input_data->data_type == bus_data_type_string) {
             if (false ==
@@ -1660,13 +1658,12 @@ bus_error_t bus_method_invoke(bus_handle_t *handle, void *paramName, char *event
 
     rbusProperty_Init(&prop, paramName, value);
     rbusObject_SetProperty(inParams, prop);
+    rbusProperty_Release(prop);
 
     rc = rbusMethod_Invoke(p_rbus_handle, event, inParams, &outParams);
     if (inParams) {
         rbusObject_Release(inParams);
     }
-    rbusProperty_Release(prop);
-    rbusValue_Release(value);
 
     if (outParams == NULL) {
         wifi_util_error_print(WIFI_BUS, "%s %d Out param is NULL\n", __func__, __LINE__);
@@ -1726,9 +1723,7 @@ bus_error_t bus_method_invoke(bus_handle_t *handle, void *paramName, char *event
         }
         memcpy(output_data->raw_data.bytes, ptr, len);
     }
-    if (outParams) {
-        rbusObject_Release(outParams);
-    }
+    rbusValue_Release(value);
     return convert_rbus_to_bus_error_code(rc);
 }
 
